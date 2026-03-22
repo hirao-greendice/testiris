@@ -4,10 +4,13 @@ const player = document.getElementById("player");
 const gridColumns = 8;
 const gridRows = 12;
 const dragThresholdRatio = 1.0;
+const moveDurationMs = 80;
 
 const state = {
   x: 0,
   y: 0,
+  isMoving: false,
+  moveQueue: [],
   isDragging: false,
   pointerId: null,
   lastPointerX: 0,
@@ -49,55 +52,73 @@ function getDragThreshold() {
   return Math.max(40, cellSize * dragThresholdRatio);
 }
 
-function movePlayer(dx, dy) {
-  state.x = clamp(state.x + dx, 0, gridColumns - 1);
-  state.y = clamp(state.y + dy, 0, gridRows - 1);
+function processNextMove() {
+  if (state.isMoving || state.moveQueue.length === 0) {
+    return;
+  }
+
+  const { dx, dy } = state.moveQueue.shift();
+  const nextX = clamp(state.x + dx, 0, gridColumns - 1);
+  const nextY = clamp(state.y + dy, 0, gridRows - 1);
+
+  if (nextX === state.x && nextY === state.y) {
+    processNextMove();
+    return;
+  }
+
+  state.x = nextX;
+  state.y = nextY;
+  state.isMoving = true;
   renderPlayer();
+  window.setTimeout(() => {
+    state.isMoving = false;
+    processNextMove();
+  }, moveDurationMs);
 }
 
-function moveFromDrag(deltaX, deltaY) {
+function queueMove(dx, dy) {
+  state.moveQueue.push({ dx, dy });
+  processNextMove();
+}
+
+function moveFromDrag(event) {
   const dragThreshold = getDragThreshold();
+  const deltaX = event.clientX - state.lastPointerX;
+  const deltaY = event.clientY - state.lastPointerY;
 
   if (Math.abs(deltaX) < dragThreshold && Math.abs(deltaY) < dragThreshold) {
     return;
   }
 
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    const steps = Math.trunc(deltaX / dragThreshold);
-
-    if (steps !== 0) {
-      movePlayer(steps, 0);
-      state.lastPointerX += steps * dragThreshold;
-    }
-
+    queueMove(deltaX > 0 ? 1 : -1, 0);
+    state.lastPointerX = event.clientX;
+    state.lastPointerY = event.clientY;
     return;
   }
 
-  const steps = Math.trunc(deltaY / dragThreshold);
-
-  if (steps !== 0) {
-    movePlayer(0, steps);
-    state.lastPointerY += steps * dragThreshold;
-  }
+  queueMove(0, deltaY > 0 ? 1 : -1);
+  state.lastPointerX = event.clientX;
+  state.lastPointerY = event.clientY;
 }
 
 function handleKeydown(event) {
   switch (event.key) {
     case "ArrowUp":
       event.preventDefault();
-      movePlayer(0, -1);
+      queueMove(0, -1);
       break;
     case "ArrowDown":
       event.preventDefault();
-      movePlayer(0, 1);
+      queueMove(0, 1);
       break;
     case "ArrowLeft":
       event.preventDefault();
-      movePlayer(-1, 0);
+      queueMove(-1, 0);
       break;
     case "ArrowRight":
       event.preventDefault();
-      movePlayer(1, 0);
+      queueMove(1, 0);
       break;
   }
 }
@@ -123,9 +144,7 @@ function handlePointerMove(event) {
     return;
   }
 
-  const deltaX = event.clientX - state.lastPointerX;
-  const deltaY = event.clientY - state.lastPointerY;
-  moveFromDrag(deltaX, deltaY);
+  moveFromDrag(event);
 }
 
 function clearDraggingState() {
