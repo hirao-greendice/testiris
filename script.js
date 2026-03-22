@@ -1,8 +1,8 @@
 const board = document.getElementById("board");
 const player = document.getElementById("player");
 
-const gridColumns = 8;
-const gridRows = 12;
+const gridColumns = 10;
+const gridRows = 15;
 const dragThresholdRatio = 1.0;
 const moveDurationMs = 80;
 

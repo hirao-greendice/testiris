@@ -15,7 +15,7 @@ body {
   --board-width: 320px;
   --board-height: 480px;
   --cell-size: 40px;
-  --area-size: calc(var(--cell-size) * 4);
+  --area-size: calc(var(--cell-size) * 5);
   --area-light: #e4e4e4;
   --area-dark: #dcdcdc;
   position: absolute;
@@ -42,9 +42,9 @@ body {
   background-position:
     0 0,
     0 0,
-    calc(var(--cell-size) * 4) 0,
-    0 calc(var(--cell-size) * 4),
-    calc(var(--cell-size) * 4) calc(var(--cell-size) * 8);
+    calc(var(--cell-size) * 5) 0,
+    0 calc(var(--cell-size) * 5),
+    calc(var(--cell-size) * 5) calc(var(--cell-size) * 10);
   background-repeat:
     repeat,
     repeat,
