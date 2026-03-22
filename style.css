@@ -1,0 +1,46 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background: #fff;
+  touch-action: none;
+}
+
+#board {
+  --board-size: 320px;
+  --cell-size: 40px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--board-size);
+  height: var(--board-size);
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  border: 1px solid #000;
+  background-color: #fff;
+  background-image:
+    linear-gradient(to right, #ddd 1px, transparent 1px),
+    linear-gradient(to bottom, #ddd 1px, transparent 1px);
+  background-size: var(--cell-size) var(--cell-size);
+}
+
+body.is-mobile #board {
+  top: 42%;
+}
+
+#player {
+  position: absolute;
+  width: calc(var(--cell-size) * 0.7);
+  height: calc(var(--cell-size) * 0.7);
+  left: calc(var(--cell-size) * 0.15);
+  top: calc(var(--cell-size) * 0.15);
+  border-radius: 50%;
+  background: #000;
+  transition: transform 0.08s linear;
+  will-change: transform;
+}
