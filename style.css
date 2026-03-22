@@ -12,21 +12,45 @@ body {
 }
 
 #board {
-  --board-size: 320px;
+  --board-width: 320px;
+  --board-height: 480px;
   --cell-size: 40px;
+  --area-size: calc(var(--cell-size) * 4);
+  --area-light: #e4e4e4;
+  --area-dark: #dcdcdc;
   position: absolute;
   left: 50%;
   top: 50%;
-  width: var(--board-size);
-  height: var(--board-size);
+  width: var(--board-width);
+  height: var(--board-height);
   transform: translate(-50%, -50%);
   box-sizing: border-box;
   border: 1px solid #000;
-  background-color: #fff;
+  background-color: var(--area-light);
   background-image:
-    linear-gradient(to right, #ddd 1px, transparent 1px),
-    linear-gradient(to bottom, #ddd 1px, transparent 1px);
-  background-size: var(--cell-size) var(--cell-size);
+    linear-gradient(to right, #c8c8c8 1px, transparent 1px),
+    linear-gradient(to bottom, #c8c8c8 1px, transparent 1px),
+    linear-gradient(var(--area-dark), var(--area-dark)),
+    linear-gradient(var(--area-dark), var(--area-dark)),
+    linear-gradient(var(--area-dark), var(--area-dark));
+  background-size:
+    var(--cell-size) var(--cell-size),
+    var(--cell-size) var(--cell-size),
+    var(--area-size) var(--area-size),
+    var(--area-size) var(--area-size),
+    var(--area-size) var(--area-size);
+  background-position:
+    0 0,
+    0 0,
+    calc(var(--cell-size) * 4) 0,
+    0 calc(var(--cell-size) * 4),
+    calc(var(--cell-size) * 4) calc(var(--cell-size) * 8);
+  background-repeat:
+    repeat,
+    repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat;
 }
 
 body.is-mobile #board {
